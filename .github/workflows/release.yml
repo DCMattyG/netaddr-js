@@ -54,6 +54,11 @@ jobs:
       - name: Enforce test-suite coverage (100%)
         run: npm run test:coverage:tests
 
+      - name: Verify npm authentication
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm whoami --registry https://registry.npmjs.org
+
       - name: Semantic release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -37,6 +37,7 @@
     [
       "@semantic-release/github",
       {
+        "labels": [],
         "assets": [
           {
             "path": "dist/*.tgz",

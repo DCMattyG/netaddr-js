@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/DCMattyG/netaddr-js/compare/v1.0.0...v1.0.1) (2026-03-17)
+
+### Bug Fixes
+
+* **release:** set npm publish access public ([c077828](https://github.com/DCMattyG/netaddr-js/commit/c0778282ff556c9fbffab11fd16599e65f098624))
+
 ## 1.0.0 (2026-03-17)
 
 ### Features

@@ -1,6 +1,6 @@
 {
   "name": "netaddr-js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "JavaScript network address library inspired by Python netaddr",
   "type": "module",
   "engines": {

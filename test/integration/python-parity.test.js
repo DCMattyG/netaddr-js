@@ -31,10 +31,18 @@ import json
 from netaddr import IPAddress, IPNetwork, cidr_merge, iprange_to_cidrs, iter_iprange
 from netaddr.strategy import ipv6
 
+expand_partial_ipv4_address_compat = None
+
 try:
   from netaddr import expand_partial_ipv4_address as expand_partial_ipv4_address_compat
 except ImportError:
-  from netaddr.ip import expand_partial_ipv4_address as expand_partial_ipv4_address_compat
+  try:
+    from netaddr.ip import expand_partial_ipv4_address as expand_partial_ipv4_address_compat
+  except ImportError:
+    try:
+      from netaddr.strategy.ipv4 import expand_partial_address as expand_partial_ipv4_address_compat
+    except ImportError:
+      expand_partial_ipv4_address_compat = None
 
 RFC1924_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_" + chr(96) + "{|}~"
 
@@ -69,19 +77,22 @@ out = {
   ],
   "iter_iprange": [str(ip) for ip in iter_iprange("192.0.2.1", "192.0.2.3")],
   "ipv6_base85": ipv6_to_base85_compat(int(IPAddress("2001:db8::dead:beef"))),
-  "expand_partial_ipv4": [
-    expand_partial_ipv4_address_compat("10"),
-    expand_partial_ipv4_address_compat("10.1"),
-    expand_partial_ipv4_address_compat("10.1.2"),
-    expand_partial_ipv4_address_compat("10.1.2.3"),
-    expand_partial_ipv4_address_compat("01.2"),
-  ],
+  "expand_partial_ipv4": None,
   "ipv6_formats": {
     "compact": IPAddress("::ffff:192.0.2.1").format(ipv6.ipv6_compact),
     "full": IPAddress("::ffff:192.0.2.1").format(ipv6.ipv6_full),
     "verbose": IPAddress("::ffff:192.0.2.1").format(ipv6.ipv6_verbose),
   },
 }
+
+if expand_partial_ipv4_address_compat is not None:
+  out["expand_partial_ipv4"] = [
+    expand_partial_ipv4_address_compat("10"),
+    expand_partial_ipv4_address_compat("10.1"),
+    expand_partial_ipv4_address_compat("10.1.2"),
+    expand_partial_ipv4_address_compat("10.1.2.3"),
+    expand_partial_ipv4_address_compat("01.2"),
+  ]
 
 print(json.dumps(out))
 `;
@@ -136,14 +147,16 @@ test('Python netaddr differential parity for core operations', (t) => {
 
   assert.equal(ipv6_to_base85('2001:db8::dead:beef'), py.ipv6_base85);
 
-  const jsExpanded = [
-    expand_partial_ipv4_address('10'),
-    expand_partial_ipv4_address('10.1'),
-    expand_partial_ipv4_address('10.1.2'),
-    expand_partial_ipv4_address('10.1.2.3'),
-    expand_partial_ipv4_address('01.2'),
-  ];
-  assert.deepEqual(jsExpanded, py.expand_partial_ipv4);
+  if (Array.isArray(py.expand_partial_ipv4)) {
+    const jsExpanded = [
+      expand_partial_ipv4_address('10'),
+      expand_partial_ipv4_address('10.1'),
+      expand_partial_ipv4_address('10.1.2'),
+      expand_partial_ipv4_address('10.1.2.3'),
+      expand_partial_ipv4_address('01.2'),
+    ];
+    assert.deepEqual(jsExpanded, py.expand_partial_ipv4);
+  }
 
   const jsIpv6Formats = {
     compact: new IPAddress('::ffff:192.0.2.1').format(ipv6_compact),

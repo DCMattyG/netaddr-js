@@ -15,6 +15,9 @@
     "NOTICE",
     "THIRD_PARTY_NOTICES.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "node --test",
     "test:coverage": "node --test --experimental-test-coverage",

@@ -9,6 +9,9 @@ const IPV6_URL =
 
 const IPV4_INDEX_URL = 'https://www.iana.org/assignments/iana-ipv4-special-registry/';
 const IPV6_INDEX_URL = 'https://www.iana.org/assignments/iana-ipv6-special-registry/';
+const FETCH_RETRY_ATTEMPTS = 4;
+const FETCH_TIMEOUT_MS = 30000;
+const FETCH_RETRY_BASE_DELAY_MS = 750;
 
 function parseCsvLine(line) {
   const cells = [];
@@ -123,11 +126,36 @@ function toModuleSource(ipv4, ipv6) {
 }
 
 async function fetchText(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+  let lastError;
+
+  for (let attempt = 1; attempt <= FETCH_RETRY_ATTEMPTS; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      });
+      if (!response.ok) {
+        const retriable = response.status === 408 || response.status === 429 || response.status >= 500;
+        if (!retriable || attempt === FETCH_RETRY_ATTEMPTS) {
+          throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+        }
+        throw new Error(`Retryable HTTP status ${response.status} while fetching ${url}`);
+      }
+      return response.text();
+    } catch (error) {
+      lastError = error;
+      if (attempt === FETCH_RETRY_ATTEMPTS) {
+        break;
+      }
+
+      const delayMs = FETCH_RETRY_BASE_DELAY_MS * 2 ** (attempt - 1);
+      process.stderr.write(
+        `Fetch attempt ${attempt}/${FETCH_RETRY_ATTEMPTS} failed for ${url}: ${error.message}. Retrying in ${delayMs}ms...\n`
+      );
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
   }
-  return response.text();
+
+  throw lastError;
 }
 
 function findCsvHref(indexHtml, matchText) {

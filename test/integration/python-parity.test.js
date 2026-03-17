@@ -28,8 +28,13 @@ function pythonNetaddrAvailable() {
 function pythonNetaddrJSON() {
   const script = String.raw`
 import json
-from netaddr import IPAddress, IPNetwork, cidr_merge, iprange_to_cidrs, iter_iprange, expand_partial_ipv4_address
+from netaddr import IPAddress, IPNetwork, cidr_merge, iprange_to_cidrs, iter_iprange
 from netaddr.strategy import ipv6
+
+try:
+  from netaddr import expand_partial_ipv4_address as expand_partial_ipv4_address_compat
+except ImportError:
+  from netaddr.ip import expand_partial_ipv4_address as expand_partial_ipv4_address_compat
 
 RFC1924_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_" + chr(96) + "{|}~"
 
@@ -65,11 +70,11 @@ out = {
   "iter_iprange": [str(ip) for ip in iter_iprange("192.0.2.1", "192.0.2.3")],
   "ipv6_base85": ipv6_to_base85_compat(int(IPAddress("2001:db8::dead:beef"))),
   "expand_partial_ipv4": [
-    expand_partial_ipv4_address("10"),
-    expand_partial_ipv4_address("10.1"),
-    expand_partial_ipv4_address("10.1.2"),
-    expand_partial_ipv4_address("10.1.2.3"),
-    expand_partial_ipv4_address("01.2"),
+    expand_partial_ipv4_address_compat("10"),
+    expand_partial_ipv4_address_compat("10.1"),
+    expand_partial_ipv4_address_compat("10.1.2"),
+    expand_partial_ipv4_address_compat("10.1.2.3"),
+    expand_partial_ipv4_address_compat("01.2"),
   ],
   "ipv6_formats": {
     "compact": IPAddress("::ffff:192.0.2.1").format(ipv6.ipv6_compact),

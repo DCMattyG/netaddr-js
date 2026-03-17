@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/DCMattyG/netaddr-js/compare/v1.0.0...v1.0.1) (2026-03-17)
+
+### Bug Fixes
+
+* **readme:** improve npm package onboarding and links ([16c98e0](https://github.com/DCMattyG/netaddr-js/commit/16c98e0caba939efdb05c92ffc7d67a6b270c112))
+
 ## 1.0.0 (2026-03-17)
 
 ### Features

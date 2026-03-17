@@ -1,0 +1,14 @@
+{
+	// Keep all standard markdownlint rules enabled unless explicitly tuned.
+	"default": true,
+
+	// Pragmatic line-length configuration for docs-heavy repositories:
+	// - keep prose readable,
+	// - allow long code/table/header lines where wrapping hurts clarity.
+	"MD013": {
+		"line_length": 100,
+		"code_blocks": false,
+		"tables": false,
+		"headings": false
+	}
+}

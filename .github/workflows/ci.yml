@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+      docs: ${{ steps.filter.outputs.docs }}
+    steps:
+      - name: Detect changed file groups
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            code:
+              - 'src/**'
+              - 'test/**'
+              - 'scripts/**'
+              - 'playground/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - '.github/workflows/**'
+            docs:
+              - 'docs/**'
+              - '**/*.md'
+              - '.markdownlint.jsonc'
+              - '.markdownlintignore'
+
+  docs-lint:
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        if: needs.changes.outputs.docs == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: needs.changes.outputs.docs == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: needs.changes.outputs.docs == 'true'
+        run: npm ci
+
+      - name: Lint Markdown
+        if: needs.changes.outputs.docs == 'true'
+        run: npm run lint:md
+
+      - name: No docs changes
+        if: needs.changes.outputs.docs != 'true'
+        run: echo "No docs or markdown changes detected; docs lint skipped."
+
+  test:
+    needs: changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        if: needs.changes.outputs.code == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: needs.changes.outputs.code == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: needs.changes.outputs.code == 'true'
+        run: npm ci
+
+      - name: Run tests
+        if: needs.changes.outputs.code == 'true'
+        run: npm test
+
+      - name: Enforce source coverage (100%)
+        if: needs.changes.outputs.code == 'true'
+        run: npm run test:coverage:src
+
+      - name: Enforce test-suite coverage (100%)
+        if: needs.changes.outputs.code == 'true'
+        run: npm run test:coverage:tests
+
+      - name: No code-impacting changes
+        if: needs.changes.outputs.code != 'true'
+        run: echo "No code-impacting changes detected; tests skipped."

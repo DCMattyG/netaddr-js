@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>netaddr-js Playground</title>
+    <meta
+      name="description"
+      content="Interactive playground for exploring netaddr-js IP, CIDR, range, and set behavior."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body data-active-lab="address-network">
+    <div class="bg-orb bg-orb-a" aria-hidden="true"></div>
+    <div class="bg-orb bg-orb-b" aria-hidden="true"></div>
+
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">Experiment</p>
+        <h1>netaddr-js Playground</h1>
+        <p class="lead">
+          Explore and test most of the `netaddr-js` API surface from one dependency-light,
+          standalone app.
+        </p>
+        <p class="meta">Coverage target: address, network, CIDR math, range/glob/nmap, set ops, EUI and registries, RFC1924, validators, and subnet splitting.</p>
+      </header>
+
+      <section class="workspace" aria-label="Playground workspace">
+        <aside class="panel lab-sidebar" aria-label="Lab navigation" data-lab-nav>
+          <h2>Lab Navigation</h2>
+          <p class="section-note">Choose a lab area from the sidebar.</p>
+          <div class="lab-nav-grid" role="tablist" aria-label="Lab groups">
+            <button type="button" data-target="address-network">Address and Network</button>
+            <button type="button" data-target="cidr-match">CIDR and Match</button>
+            <button type="button" data-target="range-ipset">Range, Glob, Nmap, and IPSet</button>
+            <button type="button" data-target="eui-misc">EUI, RFC1924, Validators, and Splitter</button>
+          </div>
+
+        </aside>
+
+        <div class="workspace-content">
+          <section class="grid" data-lab-section="address-network">
+            <div class="panel section-presets" aria-label="Address and network presets">
+              <h3>Quick Presets</h3>
+              <div class="preset-row">
+                <button type="button" data-preset="quick_ipv4">Private IPv4 Planning</button>
+                <button type="button" data-preset="quick_ipv6">IPv6 Exploration</button>
+              </div>
+            </div>
+
+            <article class="panel" aria-labelledby="ip-lab-title">
+              <h2 id="ip-lab-title">IP Address Lab</h2>
+              <p class="section-note">`IPAddress`, parser flags, format dialects, reverse DNS, conversion, and IANA reachability.</p>
+
+              <label for="ip-input">Address</label>
+              <input id="ip-input" value="192.0.2.9" />
+
+              <label for="ip-version">Version</label>
+              <select id="ip-version">
+                <option value="auto">Auto-detect</option>
+                <option value="4">IPv4</option>
+                <option value="6">IPv6</option>
+              </select>
+
+              <div class="lab-mode" role="tablist" aria-label="IP workflow mode">
+                <button type="button" data-ip-mode-target="profile">Profile and Formats</button>
+                <button type="button" data-ip-mode-target="parser">Parser Behavior</button>
+              </div>
+
+              <section class="lab-subpanel" data-ip-mode-group="profile">
+                <p class="section-note">Use this mode for canonical formatting, classification, and conversion output.</p>
+              </section>
+
+              <section class="lab-subpanel" data-ip-mode-group="parser" hidden>
+                <p class="section-note">Toggle parser behavior for edge-case text input and rerun analysis.</p>
+                <fieldset>
+                  <legend>Parser Flags</legend>
+                  <label><input id="ip-flag-aton" type="checkbox" /> INET_ATON</label>
+                  <label><input id="ip-flag-pton" type="checkbox" /> INET_PTON</label>
+                  <label><input id="ip-flag-zerofill" type="checkbox" /> ZEROFILL</label>
+                </fieldset>
+              </section>
+
+              <button id="ip-run" type="button">Analyze IP</button>
+              <pre id="ip-output" class="output" aria-live="polite"></pre>
+            </article>
+
+            <article class="panel" aria-labelledby="network-lab-title">
+              <h2 id="network-lab-title">Network Lab</h2>
+              <p class="section-note">`IPNetwork`, host-bit behavior, containment/overlap, subnetting, and host iteration.</p>
+
+              <label for="network-input">Network</label>
+              <input id="network-input" value="192.0.2.11/24" />
+
+              <div class="lab-mode" role="tablist" aria-label="Network workflow mode">
+                <button type="button" data-network-mode-target="overview">Overview and Hosts</button>
+                <button type="button" data-network-mode-target="contains">Containment</button>
+                <button type="button" data-network-mode-target="overlap">Overlap</button>
+                <button type="button" data-network-mode-target="planning">Subnet Planning</button>
+              </div>
+
+              <section class="lab-subpanel" data-network-mode-group="overview">
+                <p class="section-note">Use this mode for baseline network facts and host preview.</p>
+                <div class="tool-row">
+                  <button id="network-summary-run" type="button">Summary</button>
+                  <button id="network-hosts-run" type="button">Hosts</button>
+                  <button id="network-run" type="button">Overview Analysis</button>
+                </div>
+              </section>
+
+              <section class="lab-subpanel" data-network-mode-group="contains" hidden>
+                <p class="section-note">Check whether an IP or CIDR falls inside the current network.</p>
+                <label for="network-contains">Contains Check Input</label>
+                <input id="network-contains" value="192.0.2.20" />
+                <div class="tool-row">
+                  <button id="network-contains-run" type="button">Run Contains Check</button>
+                </div>
+              </section>
+
+              <section class="lab-subpanel" data-network-mode-group="overlap" hidden>
+                <p class="section-note">Compare the current network with another CIDR for overlap.</p>
+                <label for="network-overlap">Overlap Check Input</label>
+                <input id="network-overlap" value="192.0.2.0/25" />
+                <div class="tool-row">
+                  <button id="network-overlap-run" type="button">Run Overlap Check</button>
+                </div>
+              </section>
+
+              <section class="lab-subpanel" data-network-mode-group="planning" hidden>
+                <p class="section-note">Preview subnet and supernet moves for prefix planning.</p>
+                <label for="network-subnet-prefix">Subnet Prefix</label>
+                <input id="network-subnet-prefix" value="26" />
+
+                <label for="network-supernet-prefix">Supernet Prefix</label>
+                <input id="network-supernet-prefix" value="24" />
+
+                <div class="tool-row">
+                  <button id="network-subnet-run" type="button">Run Subnet Preview</button>
+                  <button id="network-supernet-run" type="button">Run Supernet</button>
+                </div>
+              </section>
+
+              <fieldset>
+                <legend>Network Flags</legend>
+                <label><input id="network-flag-nohost" type="checkbox" /> NOHOST</label>
+              </fieldset>
+
+              <pre id="network-output" class="output" aria-live="polite"></pre>
+            </article>
+          </section>
+
+          <section class="panel section-presets" aria-label="CIDR presets" data-lab-section="cidr-match">
+            <h3>Quick Presets</h3>
+            <div class="preset-row">
+              <button type="button" data-preset="quick_ipv4">Private IPv4 Planning</button>
+              <button type="button" data-preset="quick_ipv6">IPv6 Exploration</button>
+              <button type="button" data-preset="quick_mixed_set">Mixed CIDR Set Math</button>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="cidr-tools-title" data-lab-section="cidr-match">
+            <h2 id="cidr-tools-title">CIDR and Match Tools</h2>
+            <p class="section-note">`cidr_merge`, `cidr_exclude`, matching CIDR helpers, spanning CIDR, and helper transforms.</p>
+
+            <label for="cidr-include">Primary CIDRs (used by Merge, Span, Match, and Unique IPs)</label>
+            <textarea id="cidr-include">10.0.0.0/24
+10.0.1.0/24
+10.0.3.0/24
+2001:db8::/126</textarea>
+
+            <div class="lab-mode" role="tablist" aria-label="CIDR workflow mode">
+              <button type="button" data-cidr-mode-target="merge">Merge and Span</button>
+              <button type="button" data-cidr-mode-target="exclude">Exclude</button>
+              <button type="button" data-cidr-mode-target="unique">Unique IPs</button>
+              <button type="button" data-cidr-mode-target="match">Match</button>
+              <button type="button" data-cidr-mode-target="helpers">Normalize and Expand</button>
+            </div>
+
+            <section class="lab-subpanel" data-cidr-mode-group="merge">
+              <p class="section-note">Aggregate adjacent CIDRs and compute a spanning range.</p>
+
+              <div class="tool-row">
+                <button id="cidr-merge-run" type="button">CIDR Merge</button>
+                <button id="cidr-span-run" type="button">Spanning CIDR</button>
+              </div>
+            </section>
+
+            <section class="lab-subpanel" data-cidr-mode-group="exclude" hidden>
+              <p class="section-note">Subtract one CIDR from another and inspect the remaining blocks.</p>
+              <label for="cidr-target">Target CIDR for Exclusion</label>
+              <input id="cidr-target" value="10.0.1.0/24" />
+
+              <label for="cidr-exclude-one">Single CIDR to Exclude from Target</label>
+              <input id="cidr-exclude-one" value="10.0.1.128/25" />
+
+              <div class="tool-row">
+                <button id="cidr-exclude-run" type="button">CIDR Exclude</button>
+              </div>
+            </section>
+
+            <section class="lab-subpanel" data-cidr-mode-group="unique" hidden>
+              <p class="section-note">Coalesce include CIDRs with optional additional CIDRs, then normalize unique blocks.</p>
+              <label for="cidr-exclude">Additional CIDRs (one per line or comma-separated)</label>
+              <textarea id="cidr-exclude">10.0.1.128/25
+10.0.3.0/25</textarea>
+
+              <div class="tool-row">
+                <button id="cidr-unique-run" type="button">Iter Unique IPs</button>
+              </div>
+            </section>
+
+            <section class="lab-subpanel" data-cidr-mode-group="match" hidden>
+              <p class="section-note">Find the best matching CIDRs for a candidate IP.</p>
+              <label for="cidr-match-ip">IP for Matching CIDR Functions</label>
+              <input id="cidr-match-ip" value="10.0.1.130" />
+
+              <div class="tool-row">
+                <button id="cidr-match-run" type="button">CIDR Match</button>
+              </div>
+            </section>
+
+            <section class="lab-subpanel" data-cidr-mode-group="helpers" hidden>
+              <p class="section-note">Convert abbreviated CIDR forms and expand partial IPv4 text.</p>
+              <label for="cidr-abbrev">CIDR Abbreviation Input</label>
+              <input id="cidr-abbrev" value="10/8" />
+
+              <div class="tool-row">
+                <button id="cidr-abbrev-run" type="button">Abbrev Helpers</button>
+              </div>
+            </section>
+
+            <pre id="cidr-output" class="output" aria-live="polite"></pre>
+          </section>
+
+          <section class="grid" data-lab-section="range-ipset">
+            <div class="panel section-presets" aria-label="Range and set presets">
+              <h3>Quick Presets</h3>
+              <div class="preset-row">
+                <button type="button" data-preset="quick_ipv4">Private IPv4 Planning</button>
+                <button type="button" data-preset="quick_ipv6">IPv6 Exploration</button>
+                <button type="button" data-preset="quick_mixed_set">Mixed CIDR Set Math</button>
+              </div>
+            </div>
+
+            <article class="panel" aria-labelledby="range-tools-title">
+              <h2 id="range-tools-title">Range, Glob, and Nmap</h2>
+              <p class="section-note">`IPRange`, `iprange_to_cidrs`, glob conversion utilities, and nmap target expansion.</p>
+
+              <div class="lab-mode" role="tablist" aria-label="Range and target workflow mode">
+                <button type="button" data-range-mode-target="range">Range Blocks</button>
+                <button type="button" data-range-mode-target="glob">Glob Pattern</button>
+                <button type="button" data-range-mode-target="nmap">Nmap Targets</button>
+              </div>
+
+              <section class="lab-subpanel" data-range-mode-group="range">
+                <p class="section-note">Convert a start/end range into minimal CIDR blocks.</p>
+                <label for="range-start">Range Start</label>
+                <input id="range-start" value="10.0.2.0" />
+
+                <label for="range-end">Range End</label>
+                <input id="range-end" value="10.0.2.63" />
+
+                <div class="tool-row">
+                  <button id="range-run" type="button">Range to CIDRs</button>
+                </div>
+              </section>
+
+              <section class="lab-subpanel" data-range-mode-group="glob" hidden>
+                <p class="section-note">Parse glob syntax, inspect equivalent ranges, and check roundtrips.</p>
+                <label for="glob-input">Glob Input</label>
+                <input id="glob-input" value="10.0-1.2.*" />
+
+                <div class="tool-row">
+                  <button id="glob-run" type="button">Analyze Glob</button>
+                </div>
+              </section>
+
+              <section class="lab-subpanel" data-range-mode-group="nmap" hidden>
+                <p class="section-note">Expand nmap-style target specs and inspect result previews.</p>
+                <label for="nmap-input">Nmap Input</label>
+                <input id="nmap-input" value="10.0.0-1.1,3" />
+
+                <div class="tool-row">
+                  <button id="nmap-run" type="button">Analyze Nmap</button>
+                </div>
+              </section>
+
+              <pre id="range-output" class="output" aria-live="polite"></pre>
+            </article>
+
+            <article class="panel" aria-labelledby="ipset-tools-title">
+              <h2 id="ipset-tools-title">IPSet Lab</h2>
+              <p class="section-note">`IPSet` union/intersection/difference/symmetric-difference and contiguity checks.</p>
+
+              <label for="ipset-a">Set A (one per line)</label>
+              <textarea id="ipset-a">10.0.0.0/24
+10.0.2.0/24</textarea>
+
+              <label for="ipset-b">Set B (one per line)</label>
+              <textarea id="ipset-b">10.0.0.128/25
+10.0.3.0/24</textarea>
+
+              <div class="lab-mode" role="tablist" aria-label="IPSet workflow mode">
+                <button type="button" data-ipset-mode-target="setops">Set Operations</button>
+                <button type="button" data-ipset-mode-target="analyze">Analyze and Contains</button>
+              </div>
+
+              <section class="lab-subpanel" data-ipset-mode-group="setops">
+                <p class="section-note">Run union, intersection, difference, and symmetric difference between sets.</p>
+                <div class="tool-row">
+                  <button id="ipset-union-run" type="button">Union</button>
+                  <button id="ipset-intersection-run" type="button">Intersection</button>
+                  <button id="ipset-diff-run" type="button">Difference</button>
+                  <button id="ipset-symdiff-run" type="button">Symmetric Diff</button>
+                </div>
+              </section>
+
+              <section class="lab-subpanel" data-ipset-mode-group="analyze" hidden>
+                <p class="section-note">Inspect CIDR/range summaries and check membership for one candidate.</p>
+                <label for="ipset-check">Membership Check Input</label>
+                <input id="ipset-check" value="10.0.0.200" />
+
+                <div class="tool-row">
+                  <button id="ipset-analyze-run" type="button">Analyze Sets</button>
+                </div>
+              </section>
+
+              <pre id="ipset-output" class="output" aria-live="polite"></pre>
+            </article>
+          </section>
+
+          <section class="grid" data-lab-section="eui-misc">
+            <div class="panel section-presets" aria-label="EUI and misc presets">
+              <h3>Quick Presets</h3>
+              <div class="preset-row">
+                <button type="button" data-preset="quick_ipv6">IPv6 Exploration</button>
+                <button type="button" data-preset="quick_mac">MAC and Registry</button>
+              </div>
+            </div>
+
+            <article class="panel" aria-labelledby="eui-tools-title">
+              <h2 id="eui-tools-title">EUI and Registry Lab</h2>
+              <p class="section-note">`EUI`, `OUI`, `IAB`, formatting dialects, link-local generation, and registry mutators/lookups.</p>
+
+              <div class="lab-mode" role="tablist" aria-label="EUI and registry workflow mode">
+                <button type="button" data-eui-mode-target="analysis">EUI Details</button>
+                <button type="button" data-eui-mode-target="registry">Registry Ops</button>
+              </div>
+
+              <section class="lab-subpanel" data-eui-mode-group="analysis">
+                <p class="section-note">Inspect EUI parsing, dialect formats, and IPv6 derivations.</p>
+                <label for="eui-input">EUI/MAC Input</label>
+                <input id="eui-input" value="00-1b-77-49-54-fd" />
+
+                <label for="eui-prefix">IPv6 Prefix for EUI Derivation</label>
+                <input id="eui-prefix" value="2001:db8::/64" />
+
+                <div class="tool-row">
+                  <button id="eui-run" type="button">Analyze EUI</button>
+                </div>
+              </section>
+
+              <section class="lab-subpanel" data-eui-mode-group="registry" hidden>
+                <p class="section-note">Register, query, and clear runtime OUI/IAB entries.</p>
+                <label for="registry-oui">Custom OUI Prefix</label>
+                <input id="registry-oui" value="001b77" />
+
+                <label for="registry-iab">Custom IAB Prefix</label>
+                <input id="registry-iab" value="001b77449" />
+
+                <div class="tool-row">
+                  <button id="registry-register-run" type="button">Register Custom Entries</button>
+                  <button id="registry-lookup-run" type="button">Lookup Entries</button>
+                  <button id="registry-clear-run" type="button">Clear Runtime Registry</button>
+                </div>
+              </section>
+
+              <pre id="eui-output" class="output" aria-live="polite"></pre>
+            </article>
+
+            <article class="panel" aria-labelledby="misc-tools-title">
+              <h2 id="misc-tools-title">RFC1924, Validators, and Splitter</h2>
+              <p class="section-note">Base85 conversion, input validators, and `SubnetSplitter` extraction workflows.</p>
+
+              <div class="lab-mode" role="tablist" aria-label="Misc workflow mode">
+                <button type="button" data-misc-mode-target="rfc">RFC1924 Base85</button>
+                <button type="button" data-misc-mode-target="validators">Validators</button>
+                <button type="button" data-misc-mode-target="splitter">Subnet Splitter</button>
+              </div>
+
+              <section class="lab-subpanel" data-misc-mode-group="rfc">
+                <p class="section-note">Roundtrip an IPv6 address through RFC1924 base85 encoding.</p>
+                <label for="rfc-ipv6">RFC1924 IPv6 Input</label>
+                <input id="rfc-ipv6" value="2001:db8::dead:beef" />
+
+                <div class="tool-row">
+                  <button id="rfc-run" type="button">RFC1924 Roundtrip</button>
+                </div>
+              </section>
+
+              <section class="lab-subpanel" data-misc-mode-group="validators" hidden>
+                <p class="section-note">Validate IPv4, IPv6, MAC, and EUI-64 text forms.</p>
+                <label for="validator-ipv4">Validator IPv4</label>
+                <input id="validator-ipv4" value="192.0.2.1" />
+
+                <label for="validator-ipv6">Validator IPv6</label>
+                <input id="validator-ipv6" value="2001:db8::1" />
+
+                <label for="validator-mac">Validator MAC</label>
+                <input id="validator-mac" value="00:1b:77:49:54:fd" />
+
+                <label for="validator-eui64">Validator EUI-64</label>
+                <input id="validator-eui64" value="00:1b:77:ff:fe:49:54:fd" />
+
+                <div class="tool-row">
+                  <button id="validators-run" type="button">Run Validators</button>
+                </div>
+              </section>
+
+              <section class="lab-subpanel" data-misc-mode-group="splitter" hidden>
+                <p class="section-note">Extract child subnets and inspect the remaining address pool.</p>
+                <label for="splitter-base">SubnetSplitter Base CIDR</label>
+                <input id="splitter-base" value="10.20.0.0/24" />
+
+                <label for="splitter-prefix">Extract Prefix</label>
+                <input id="splitter-prefix" value="26" />
+
+                <label for="splitter-count">Extract Count (optional)</label>
+                <input id="splitter-count" value="2" />
+
+                <div class="tool-row">
+                  <button id="splitter-run" type="button">Run Splitter</button>
+                </div>
+              </section>
+
+              <pre id="misc-output" class="output" aria-live="polite"></pre>
+            </article>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <section class="command-trace-dock" data-command-trace-dock data-open="false" aria-label="Command history dock">
+      <div class="command-trace-shell">
+        <div class="command-trace-bar">
+          <button
+            type="button"
+            class="command-trace-toggle"
+            data-command-trace-toggle
+            aria-expanded="false"
+            aria-controls="command-trace-panel"
+          >
+            Command History (<span data-command-trace-count>0</span>)
+          </button>
+          <p class="command-trace-last" data-command-trace-last>Last: none</p>
+          <div class="command-trace-actions">
+            <button type="button" data-command-trace-clear>Clear</button>
+          </div>
+        </div>
+
+        <div class="command-trace-panel" id="command-trace-panel" data-command-trace-panel hidden>
+          <ol class="command-trace-list" data-command-trace-list></ol>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

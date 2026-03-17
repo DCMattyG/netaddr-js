@@ -1,0 +1,11 @@
+{
+  "name": "@netaddr-js/playground-example",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Standalone playground example for netaddr-js",
+  "type": "module",
+  "scripts": {
+    "serve": "node ./serve.mjs",
+    "start": "node ./serve.mjs"
+  }
+}

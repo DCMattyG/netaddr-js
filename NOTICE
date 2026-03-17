@@ -1,0 +1,17 @@
+netaddr-js NOTICE
+
+This project (netaddr-js) is an independent JavaScript implementation inspired
+by the Python netaddr project.
+
+Attribution:
+- Upstream project: https://github.com/netaddr/netaddr
+- Credit for the original Python netaddr project belongs to its maintainers
+  and contributors.
+
+Non-affiliation:
+- netaddr-js is not an official Python netaddr port.
+- No affiliation with or endorsement by the Python netaddr project is implied.
+
+For full licensing and third-party attribution details, see:
+- LICENSE
+- THIRD_PARTY_NOTICES.md

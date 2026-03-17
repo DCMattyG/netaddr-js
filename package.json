@@ -1,0 +1,57 @@
+{
+  "name": "netaddr-js",
+  "version": "0.1.0",
+  "description": "JavaScript network address library inspired by Python netaddr",
+  "type": "module",
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "NOTICE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
+    "test:coverage:src": "npx --yes c8 --check-coverage --lines 100 --branches 100 --functions 100 --statements 100 --include=src/**/*.js --exclude=src/data/** node --test",
+    "test:coverage:tests": "node --test --experimental-test-coverage --test-coverage-include=test/** --test-coverage-exclude=test/integration/** --test-coverage-lines=100 --test-coverage-functions=100 --test-coverage-branches=100",
+    "test:parity": "REQUIRE_PYTHON_NETADDR=1 node --test test/integration/python-parity.test.js",
+    "test:release": "npm run lint:md && npm test && npm run test:coverage && npm run test:coverage:src && npm run test:coverage:tests && npm run test:parity",
+    "lint": "npm run lint:md",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
+    "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\"",
+    "docs:serve": "docsify serve docs -p 3000",
+    "docs:serve:open": "docsify serve docs -p 3000 --open",
+    "build:pages": "node scripts/build-pages.mjs",
+    "release": "semantic-release",
+    "update:iana": "node scripts/update-iana.mjs",
+    "update:ieee": "node scripts/update-ieee.mjs",
+    "update:data": "npm run update:iana && npm run update:ieee"
+  },
+  "keywords": [
+    "ip",
+    "cidr",
+    "ipv4",
+    "ipv6",
+    "netaddr"
+  ],
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/exec": "^7.1.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
+    "docsify-cli": "^4.4.4",
+    "esbuild": "^0.27.4",
+    "markdownlint-cli2": "^0.21.0",
+    "semantic-release": "^25.0.3"
+  }
+}

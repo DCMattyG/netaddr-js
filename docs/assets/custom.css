@@ -1,0 +1,17 @@
+:root {
+  --content-max-width: 980px;
+}
+
+.markdown-section {
+  max-width: var(--content-max-width);
+}
+
+.markdown-section pre > code {
+  font-size: 0.9rem;
+}
+
+.markdown-section h1,
+.markdown-section h2,
+.markdown-section h3 {
+  font-weight: 650;
+}

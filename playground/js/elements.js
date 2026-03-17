@@ -1,0 +1,88 @@
+function q(selector) {
+  return document.querySelector(selector);
+}
+
+export const els = {
+  ipInput: q('#ip-input'),
+  ipVersion: q('#ip-version'),
+  ipFlagAton: q('#ip-flag-aton'),
+  ipFlagPton: q('#ip-flag-pton'),
+  ipFlagZerofill: q('#ip-flag-zerofill'),
+  ipRun: q('#ip-run'),
+  ipOutput: q('#ip-output'),
+
+  networkInput: q('#network-input'),
+  networkContains: q('#network-contains'),
+  networkOverlap: q('#network-overlap'),
+  networkSubnetPrefix: q('#network-subnet-prefix'),
+  networkSupernetPrefix: q('#network-supernet-prefix'),
+  networkFlagNohost: q('#network-flag-nohost'),
+  networkSummaryRun: q('#network-summary-run'),
+  networkHostsRun: q('#network-hosts-run'),
+  networkContainsRun: q('#network-contains-run'),
+  networkOverlapRun: q('#network-overlap-run'),
+  networkSubnetRun: q('#network-subnet-run'),
+  networkSupernetRun: q('#network-supernet-run'),
+  networkRun: q('#network-run'),
+  networkOutput: q('#network-output'),
+
+  include: q('#cidr-include'),
+  exclude: q('#cidr-exclude'),
+  cidrTarget: q('#cidr-target'),
+  cidrExcludeOne: q('#cidr-exclude-one'),
+  cidrMatchIp: q('#cidr-match-ip'),
+  cidrAbbrev: q('#cidr-abbrev'),
+  cidrMergeRun: q('#cidr-merge-run'),
+  cidrExcludeRun: q('#cidr-exclude-run'),
+  cidrSpanRun: q('#cidr-span-run'),
+  cidrMatchRun: q('#cidr-match-run'),
+  cidrUniqueRun: q('#cidr-unique-run'),
+  cidrAbbrevRun: q('#cidr-abbrev-run'),
+  cidrOutput: q('#cidr-output'),
+
+  rangeStart: q('#range-start'),
+  rangeEnd: q('#range-end'),
+  globInput: q('#glob-input'),
+  nmapInput: q('#nmap-input'),
+  rangeRun: q('#range-run'),
+  globRun: q('#glob-run'),
+  nmapRun: q('#nmap-run'),
+  rangeOutput: q('#range-output'),
+
+  ipsetA: q('#ipset-a'),
+  ipsetB: q('#ipset-b'),
+  ipsetCheck: q('#ipset-check'),
+  ipsetUnionRun: q('#ipset-union-run'),
+  ipsetIntersectionRun: q('#ipset-intersection-run'),
+  ipsetDiffRun: q('#ipset-diff-run'),
+  ipsetSymDiffRun: q('#ipset-symdiff-run'),
+  ipsetAnalyzeRun: q('#ipset-analyze-run'),
+  ipsetOutput: q('#ipset-output'),
+
+  euiInput: q('#eui-input'),
+  euiPrefix: q('#eui-prefix'),
+  registryOui: q('#registry-oui'),
+  registryIab: q('#registry-iab'),
+  euiRun: q('#eui-run'),
+  registryRegisterRun: q('#registry-register-run'),
+  registryLookupRun: q('#registry-lookup-run'),
+  registryClearRun: q('#registry-clear-run'),
+  euiOutput: q('#eui-output'),
+
+  rfcIpv6: q('#rfc-ipv6'),
+  validatorIpv4: q('#validator-ipv4'),
+  validatorIpv6: q('#validator-ipv6'),
+  validatorMac: q('#validator-mac'),
+  validatorEui64: q('#validator-eui64'),
+  splitterBase: q('#splitter-base'),
+  splitterPrefix: q('#splitter-prefix'),
+  splitterCount: q('#splitter-count'),
+  rfcRun: q('#rfc-run'),
+  validatorsRun: q('#validators-run'),
+  splitterRun: q('#splitter-run'),
+  miscOutput: q('#misc-output'),
+};
+
+export function getElements() {
+  return els;
+}
